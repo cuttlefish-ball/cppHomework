@@ -3,6 +3,20 @@
 #include<iostream>
 #pragma comment(lib, "ws2_32.lib") 
 using namespace std;
+#define NUM 10
+SOCKET clientSocket[NUM];
+
+void trans(int id){
+    char buff[56];
+    while(1){
+        int r=recv(clientSocket[id],buff,55,0);
+        if(r>0){
+            buff[r]=0;
+            cout<<buff<<endl;
+        }
+    }
+}
+
 int main()
 {
     //1.确定网络协议版本
@@ -24,18 +38,16 @@ int main()
     //5.监听
     r=listen(serverSocket,10);
 
-    //6.接受
-    SOCKET clientSocket=accept(serverSocket,NULL,NULL);
+    cout<<"服务器启动"<<endl;
 
-    //7.通信
-    char buff[56];
-    while(1){
-        r=recv(clientSocket,buff,55,0);
-        if(r>0){
-            buff[r]=0;
-            cout<<buff<<endl;
-        }
+    //6.接受
+    for(int i=0;i<NUM;i++){
+        clientSocket[i]=accept(serverSocket,NULL,NULL);
+        //7.通信
+        CreateThread(NULL,NULL,(LPTHREAD_START_ROUTINE)trans,(LPVOID)i,NULL,NULL);
     }
+
+
 
     closesocket(serverSocket);
     WSACleanup();

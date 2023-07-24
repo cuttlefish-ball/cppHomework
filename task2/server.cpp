@@ -5,46 +5,58 @@
 using namespace std;
 #define NUM 10
 SOCKET clientSocket[NUM];
+int count=0;
 
 void trans(int id){
     char buff[56];
+    char temp[80];
     while(1){
+            // cout<<"*"<<endl;
         int r=recv(clientSocket[id],buff,55,0);
         if(r>0){
             buff[r]=0;
-            cout<<buff<<endl;
+            // cout<<buff<<endl;
+            memset(temp,0,80);
+            sprintf(temp,"ÓÃ»§%d:%s",id,buff);
+            for(int i=0;i<count;i++){
+                send(clientSocket[i],temp,strlen(temp),0);
+                // cout<<"send to "<<i<<endl;
+            }
         }
+            // cout<<"temp:"<<temp<<endl;
+            // cout<<"#"<<endl;
     }
 }
 
 int main()
 {
-    //1.ç¡®å®šç½‘ç»œåè®®ç‰ˆæœ¬
+    //1.È·¶¨ÍøÂçÐ­Òé°æ±¾
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2,2),&wsaData);
     
-    //2.åˆ›å»ºsocket
+    //2.´´½¨socket
     SOCKET serverSocket=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 
-    //3.ç¡®å®šæœåŠ¡å™¨åè®®åœ°å€ç°‡
+    //3.È·¶¨·þÎñÆ÷Ð­ÒéµØÖ·´Ø
     SOCKADDR_IN addr={0};
     addr.sin_family=AF_INET;
     addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     addr.sin_port=htons(9527);
 
-    //4.ç»‘å®š
+    //4.°ó¶¨
     int r=bind(serverSocket,(sockaddr*)&addr,sizeof(addr));
 
-    //5.ç›‘å¬
+    //5.¼àÌý
     r=listen(serverSocket,10);
+    cout<<"·þÎñÆ÷Æô¶¯"<<endl;
 
-    cout<<"æœåŠ¡å™¨å¯åŠ¨"<<endl;
-
-    //6.æŽ¥å—
+    //6.½ÓÊÜ
     for(int i=0;i<NUM;i++){
         clientSocket[i]=accept(serverSocket,NULL,NULL);
-        //7.é€šä¿¡
+        //7.Í¨ÐÅ
         CreateThread(NULL,NULL,(LPTHREAD_START_ROUTINE)trans,(LPVOID)i,NULL,NULL);
+        cout<<"ÓÃ»§"<<i<<"¼ÓÈë"<<endl;
+        count++;
     }
 
 

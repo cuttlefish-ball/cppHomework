@@ -40,3 +40,7 @@
 *.json
 *.md
 *.png
+
+/task1/build
+/task3
+/file

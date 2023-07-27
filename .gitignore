@@ -41,6 +41,7 @@
 *.md
 *.png
 
-/task1/build
-/task3
-/file
+**/build
+file
+include
+lib

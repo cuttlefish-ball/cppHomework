@@ -5,7 +5,7 @@ project(yuvPlayer)
 
 include_directories("../include/SDL")
 
-link_directories("../lib")
+link_directories("../lib/SDL")
 
 add_executable (yuvPlayer "yuvPlayer.cpp")
 

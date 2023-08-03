@@ -41,7 +41,6 @@ int MP4(void *data) {
     while (!quit)
     {
         if (pause) {
-            SDL_Delay(10);
             continue;
         }
         ret = av_read_frame(fctx, &pkt);

@@ -6,6 +6,6 @@ link_directories("../lib/openal")
 
 include_directories("../include/openal")
 
-add_executable (task3.2 "task3.2.cpp" )
+add_executable (task3.2 "PCMPlayer.cpp" )
 
 target_link_libraries(${PROJECT_NAME} OpenAL32)

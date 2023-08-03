@@ -27,7 +27,7 @@ int main(int argc, char*argv[])
 	ALuint buffer;
 	alGenBuffers(1, &buffer);
 
-	string file = "C:\\Users\\吴雨澎\\Desktop\\公司\\c++Homework\\task3\\file\\test.pcm";
+	string file = "../../../file/test.pcm";
 	FILE* fp = nullptr;
 	fopen_s(&fp, file.c_str(), "rb");
 	if (!fp) {

@@ -10,7 +10,7 @@ extern "C"
 
 using namespace std;
 
-string filePath = "../../../../../file/test.mp4";
+string filePath = "../../../file/test.mp4";
 
 AVFormatContext* fctx;
 AVCodecContext* dctx;

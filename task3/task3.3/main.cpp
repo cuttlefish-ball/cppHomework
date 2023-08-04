@@ -36,7 +36,8 @@ float pitch = 1.0f;
 
 int MP4(void *data) {
     AVPacket pkt;
-
+    int delay=50;
+    cout<<delay<<endl;
     int ret = 0;
 
     while (!quit)
@@ -80,7 +81,7 @@ int MP4(void *data) {
                     SDL_RenderClear(renderer);
                     SDL_RenderCopy(renderer, texture, NULL, NULL);
                     SDL_RenderPresent(renderer);
-                    SDL_Delay(40);
+                    SDL_Delay(delay);
                     av_frame_unref(frame);
                 }
             }
@@ -108,7 +109,7 @@ int MP4(void *data) {
                     SDL_RenderClear(renderer);
                     SDL_RenderCopy(renderer, texture, NULL, NULL);
                     SDL_RenderPresent(renderer);
-                    SDL_Delay(40);
+                    SDL_Delay(delay);
                     av_frame_unref(frame);
                 }
             }
@@ -219,12 +220,12 @@ int main(int arc,char*argv[]){
             if (event.key.keysym.sym == SDLK_w)
 			{
                 pitch += 0.1;
-			    alSourcef(source, AL_PITCH, pitch);
+			    alSourcef(source, AL_GAIN, pitch);
             }
 		    if (event.key.keysym.sym == SDLK_s)
 			{
                 pitch -= 0.1;
-			    alSourcef(source, AL_PITCH, pitch);
+			    alSourcef(source, AL_GAIN, pitch);
             }
         }
     }

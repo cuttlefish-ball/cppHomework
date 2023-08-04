@@ -21,6 +21,7 @@ AVFormatContext* fctx;
 AVCodecContext* dctx;
 AVFrame* frame;
 int video_index;
+int audio_index;
 
 SDL_Window* window;
 SDL_Renderer* renderer;
@@ -87,6 +88,31 @@ int MP4(void *data) {
         av_packet_unref(&pkt);
     }
     
+    while (!quit)
+            {
+                ret = avcodec_receive_frame(dctx, frame);
+                if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+                    break;
+                else if (ret < 0)
+                {
+                    cout << "receive error" << endl;
+                    break;
+                }
+                else
+                {
+                    SDL_UpdateYUVTexture(texture, NULL,
+                        frame->data[0], frame->linesize[0],
+                        frame->data[1], frame->linesize[1],
+                        frame->data[2], frame->linesize[2]);
+
+                    SDL_RenderClear(renderer);
+                    SDL_RenderCopy(renderer, texture, NULL, NULL);
+                    SDL_RenderPresent(renderer);
+                    SDL_Delay(40);
+                    av_frame_unref(frame);
+                }
+            }
+
     SDL_Quit();
     return 0;
 }
@@ -129,11 +155,7 @@ int PCM(void *data)
 	alBufferData(buffer, AL_FORMAT_STEREO16, file_data, file_size, 44100);
 	alSourcei(source, AL_BUFFER, buffer);
 	alSourcePlay(source);
-	while(!quit)
-	{
-        
-	}
-
+	while(!quit);
 	free(file_data);
 	alcMakeContextCurrent(NULL);
 	alDeleteSources(1, &source);
@@ -153,6 +175,7 @@ int main(int arc,char*argv[]){
     av_dump_format(fctx, 0, mfile_path.c_str(), 0);
 
     video_index = av_find_best_stream(fctx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, NULL);
+    audio_index =  av_find_best_stream(fctx, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, NULL);
     AVCodecParameters* par = fctx->streams[video_index]->codecpar;
     dctx = avcodec_alloc_context3(NULL);
     avcodec_parameters_to_context(dctx, par);
